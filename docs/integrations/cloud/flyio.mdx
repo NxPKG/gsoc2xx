@@ -1,0 +1,37 @@
+---
+title: "Fly.io"
+description: "How to sync secrets from Gsoc2 to Fly.io"
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+
+## Navigate to your project's integrations tab
+
+![integrations](../../images/integrations.png)
+
+## Enter your Fly.io Access Token
+
+Obtain a Fly.io access token in Access Tokens
+
+![integrations fly dashboard](../../images/integrations/flyio/integrations-flyio-dashboard.png)
+![integrations fly token](../../images/integrations/flyio/integrations-flyio-token.png)
+
+Press on the Fly.io tile and input your Fly.io access token to grant Gsoc2 access to your Fly.io account.
+
+![integrations fly authorization](../../images/integrations/flyio/integrations-flyio-auth.png)
+
+<Info>
+  If this is your project's first cloud integration, then you'll have to grant
+  Gsoc2 access to your project's environment variables. Although this step
+  breaks E2EE, it's necessary for Gsoc2 to sync the environment variables to
+  the cloud platform.
+</Info>
+
+## Start integration
+
+Select which Gsoc2 environment secrets you want to sync to which Fly.io app and press create integration to start syncing secrets to Fly.io.
+
+![integrations fly](../../images/integrations/flyio/integrations-flyio-create.png)
+![integrations fly](../../images/integrations/flyio/integrations-flyio.png)

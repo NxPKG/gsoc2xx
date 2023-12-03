@@ -1,0 +1,197 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+# before:
+#   hooks:
+#     # You may remove this if you don't use go modules.
+#     - cd cli && go mod tidy
+#     # you may remove this if you don't need go generate
+#     - cd cli && go generate ./...
+before:
+  hooks:
+    - ./cli/scripts/completions.sh
+    - ./cli/scripts/manpages.sh
+
+monorepo:
+  tag_prefix: gsoc2-cli/
+  dir: cli
+
+builds:
+  - id: darwin-build
+    binary: gsoc2
+    ldflags:
+      - -X github.com/Gsoc2/gsoc2-merge/packages/util.CLI_VERSION={{ .Version }}
+      - -X github.com/Gsoc2/gsoc2-merge/packages/telemetry.POSTHOG_API_KEY_FOR_CLI={{ .Env.POSTHOG_API_KEY_FOR_CLI }}
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=1
+      - CC=/home/runner/work/osxcross/target/bin/o64-clang
+      - CXX=/home/runner/work/osxcross/target/bin/o64-clang++
+    goos:
+      - darwin
+    ignore:
+      - goos: darwin
+        goarch: "386"
+    dir: ./cli
+
+  - id: all-other-builds
+    env:
+      - CGO_ENABLED=0
+    binary: gsoc2
+    ldflags:
+      - -X github.com/Gsoc2/gsoc2-merge/packages/util.CLI_VERSION={{ .Version }}
+      - -X github.com/Gsoc2/gsoc2-merge/packages/telemetry.POSTHOG_API_KEY_FOR_CLI={{ .Env.POSTHOG_API_KEY_FOR_CLI }}
+    flags:
+      - -trimpath
+    goos:
+      - freebsd
+      - linux
+      - netbsd
+      - openbsd
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "6"
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: "386"
+      - goos: freebsd
+        goarch: "386"
+    dir: ./cli
+
+archives:
+  - format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - ../README*
+      - ../LICENSE*
+      - ../manpages/*
+      - ../completions/*
+
+release:
+  replace_existing_draft: true
+  mode: "replace"
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ .Version }}-devel"
+
+# publishers:
+#   - name: fury.io
+#     ids:
+#       - gsoc2
+#     dir: "{{ dir .ArtifactPath }}"
+#     cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/gsoc2/
+
+brews:
+  - name: gsoc2
+    tap:
+      owner: Gsoc2
+      name: homebrew-get-cli
+    commit_author:
+      name: "Gsoc2"
+      email: ai@gsoc2.com
+    folder: Formula
+    homepage: "https://gsoc2.com"
+    description: "The official Gsoc2 CLI"
+    install: |-
+      bin.install "gsoc2"
+      bash_completion.install "completions/gsoc2.bash" => "gsoc2"
+      zsh_completion.install "completions/gsoc2.zsh" => "_gsoc2"
+      fish_completion.install "completions/gsoc2.fish"
+      man1.install "manpages/gsoc2.1.gz"
+  - name: 'gsoc2@{{.Version}}'
+    tap:
+      owner: Gsoc2
+      name: homebrew-get-cli
+    commit_author:
+      name: "Gsoc2"
+      email: ai@gsoc2.com
+    folder: Formula
+    homepage: "https://gsoc2.com"
+    description: "The official Gsoc2 CLI"
+    install: |-
+      bin.install "gsoc2"
+      bash_completion.install "completions/gsoc2.bash" => "gsoc2"
+      zsh_completion.install "completions/gsoc2.zsh" => "_gsoc2"
+      fish_completion.install "completions/gsoc2.fish"
+      man1.install "manpages/gsoc2.1.gz"
+
+nfpms:
+  - id: gsoc2
+    package_name: gsoc2
+    builds:
+      - all-other-builds
+    vendor: Gsoc2, Inc
+    homepage: https://gsoc2.com/
+    maintainer: Gsoc2, Inc
+    description: The offical Gsoc2 CLI
+    license: MIT
+    formats:
+      - rpm
+      - deb
+      - apk
+      - archlinux
+    bindir: /usr/bin
+    contents:
+      - src: ./completions/gsoc2.bash
+        dst: /etc/bash_completion.d/gsoc2
+      - src: ./completions/gsoc2.fish
+        dst: /usr/share/fish/vendor_completions.d/gsoc2.fish
+      - src: ./completions/gsoc2.zsh
+        dst: /usr/share/zsh/site-functions/_gsoc2
+      - src: ./manpages/gsoc2.1.gz
+        dst: /usr/share/man/man1/gsoc2.1.gz
+
+scoop:
+  bucket:
+    owner: Gsoc2
+    name: scoop-gsoc2
+  commit_author:
+    name: "Gsoc2"
+    email: ai@gsoc2.com
+  homepage: "https://gsoc2.com"
+  description: "The official Gsoc2 CLI"
+  license: MIT
+
+aurs:
+  - name: gsoc2-bin
+    homepage: "https://gsoc2.com"
+    description: "The official Gsoc2 CLI"
+    maintainers:
+      - Gsoc2, Inc <support@gsoc2.com>
+    license: MIT
+    private_key: "{{ .Env.AUR_KEY }}"
+    git_url: "ssh://aur@aur.archlinux.org/gsoc2-bin.git"
+    package: |-
+      # bin
+      install -Dm755 "./gsoc2" "${pkgdir}/usr/bin/gsoc2"
+      # license
+      install -Dm644 "./LICENSE" "${pkgdir}/usr/share/licenses/gsoc2/LICENSE"
+      # completions
+      mkdir -p "${pkgdir}/usr/share/bash-completion/completions/"
+      mkdir -p "${pkgdir}/usr/share/zsh/site-functions/"
+      mkdir -p "${pkgdir}/usr/share/fish/vendor_completions.d/"
+      install -Dm644 "./completions/gsoc2.bash" "${pkgdir}/usr/share/bash-completion/completions/gsoc2"
+      install -Dm644 "./completions/gsoc2.zsh" "${pkgdir}/usr/share/zsh/site-functions/_gsoc2"
+      install -Dm644 "./completions/gsoc2.fish" "${pkgdir}/usr/share/fish/vendor_completions.d/gsoc2.fish"
+      # man pages
+      install -Dm644 "./manpages/gsoc2.1.gz" "${pkgdir}/usr/share/man/man1/gsoc2.1.gz"
+
+# dockers:
+#   - dockerfile: cli/docker/Dockerfile
+#     goos: linux
+#     goarch: amd64
+#     ids:
+#       - gsoc2
+#     image_templates:
+#       - "gsoc2/cli:{{ .Version }}"
+#       - "gsoc2/cli:latest"

@@ -1,0 +1,67 @@
+---
+title: "Heroku"
+description: "How to sync secrets from Gsoc2 to Heroku"
+---
+
+<Tabs>
+  <Tab title="Usage">
+  Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+
+## Navigate to your project's integrations tab
+
+![integrations](../../images/integrations.png)
+
+## Authorize Gsoc2 for Heroku
+
+Press on the Heroku tile and grant Gsoc2 access to your Heroku account.
+
+![integrations heroku authorization](../../images/integrations/heroku/integrations-heroku-auth.png)
+
+<Info>
+  If this is your project's first cloud integration, then you'll have to grant
+  Gsoc2 access to your project's environment variables. Although this step
+  breaks E2EE, it's necessary for Gsoc2 to sync the environment variables to
+  the cloud platform.
+</Info>
+
+## Start integration
+
+Select which Gsoc2 environment secrets you want to sync to which Heroku app and press create integration to start syncing secrets to Heroku.
+
+![integrations heroku](../../images/integrations/heroku/integrations-heroku-create.png)
+![integrations heroku](../../images/integrations/heroku/integrations-heroku.png)
+  </Tab>
+  <Tab title="Self-Hosted Setup">
+  Using the Heroku integration on a self-hosted instance of Gsoc2 requires configuring an API client in Heroku
+  and registering your instance with it.
+  
+  ## Create an API client in Heroku
+  
+  Navigate to your user Account settings > Applications to create a new API client.
+
+   ![integrations Heroku config](../../images/integrations/heroku/integrations-heroku-config-settings.png) 
+   ![integrations Heroku config](../../images/integrations/heroku/integrations-heroku-config-applications.png) 
+   ![integrations Heroku config](../../images/integrations/heroku/integrations-heroku-config-new-app.png) 
+   
+    Create the API client. As part of the form, set the **OAuth callback URL** to `https://your-domain.com/integrations/heroku/oauth2/callback`.
+
+   ![integrations Heroku config](../../images/integrations/heroku/integrations-heroku-config-new-app-form.png) 
+   
+   ## Add your Heroku API client credentials to Gsoc2
+   
+   Obtain the **Client ID** and **Client Secret** for your Heroku API client.
+   
+   ![integrations Heroku config](../../images/integrations/heroku/integrations-heroku-config-credentials.png) 
+   
+   Back in your Gsoc2 instance, add two new environment variables for the credentials of your Heroku API client.
+
+   - `CLIENT_ID_HEROKU`: The **Client ID** of your Heroku API client.
+   - `CLIENT_SECRET_HEROKU`: The **Client Secret** of your Heroku API client.
+   
+  Once added, restart your Gsoc2 instance and use the Heroku integration.
+
+  </Tab>
+</Tabs>
+

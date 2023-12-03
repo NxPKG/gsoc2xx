@@ -1,0 +1,31 @@
+---
+title: "Authentication"
+description: "How to authenticate with the Gsoc2 Public API"
+---
+
+The Public API accepts multiple modes of authentication being via [Gsoc2 Token](/documentation/platform/token) or API Key.
+
+- [Gsoc2 Token](/documentation/platform/token): Provides short-lived, scoped CRUD access to the secrets of a specific project and environment.
+- API Key: Provides full access to all endpoints representing the user without ability to encrypt/decrypt secrets for **E2EE** endpoints.
+
+<Tabs>
+    <Tab title="Gsoc2 Token">
+        The Gsoc2 Token mode uses an Gsoc2 Token to authenticate with the API.
+
+        To authenticate requests with Gsoc2 using the Gsoc2 Token, you must include your Gsoc2 Token in the `Authorization` header of HTTP requests made to the platform with the value `Bearer <gsoc2_token>`.
+
+        You can obtain an Gsoc2 Token in Project Settings > Service Tokens.
+
+        ![token add](../../images/project-token-add.png)
+    </Tab>
+    <Tab title="API Key">
+        The API key mode uses an API key to authenticate with the API.
+
+        To authenticate requests with Gsoc2 using the API Key, you must include an API key in the `X-API-KEY` header of HTTP requests made to the platform. 
+
+        You can obtain an API key in User Settings > API Keys
+
+        ![API key dashboard](../../images/api-key-dashboard.png)
+        ![API key in personal settings](../../images/api-key-settings.png)
+    </Tab>
+</Tabs>

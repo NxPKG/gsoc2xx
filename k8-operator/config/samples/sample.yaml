@@ -1,0 +1,28 @@
+apiVersion: secrets.gsoc2.com/v1alpha1
+kind: Gsoc2Secret
+metadata:
+  name: gsoc2secret-sample
+spec:
+  hostAPI: http://localhost:8764/api
+  resyncInterval: 10
+  authentication:
+    serviceAccount:
+      serviceAccountSecretReference:
+        secretName: service-account
+        secretNamespace: default
+      projectId: "6439ec224cfbf7ea2a95b651"
+      environmentName: "dev"
+    serviceToken:
+      serviceTokenSecretReference:
+        secretName: service-token
+        secretNamespace: default
+      secretsScope:
+        envSlug: dev
+        secretsPath: "/"
+  managedSecretReference:
+    secretName: managed-secret
+    secretNamespace: default
+  # # To be depreciated soon
+  # tokenSecretReference:
+  #   secretName: service-token
+  #   secretNamespace: default

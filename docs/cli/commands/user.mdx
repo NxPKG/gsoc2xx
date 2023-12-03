@@ -1,0 +1,29 @@
+---
+title: "gsoc2 user"
+description: "Manage logged in users"
+---
+
+```bash
+gsoc2 user
+```
+
+## Description
+This command allows you to manage the current logged in users on the CLI
+
+### Sub-commands 
+<Accordion title="gsoc2 user switch" defaultOpen="true">
+  Use this command to switch between profiles that are currently logged into the CLI 
+
+  ```bash
+  gsoc2 user switch
+  ```
+</Accordion>
+
+<Accordion title="gsoc2 user update domain">
+  With this command, you can modify the backend API that is utilized for all requests associated with a specific profile. 
+  For instance, you have the option to point the profile to use either the Gsoc2 Cloud or your own self-hosted Gsoc2 instance.
+
+  ```bash 
+  gsoc2 user update domain
+  ```
+</Accordion>

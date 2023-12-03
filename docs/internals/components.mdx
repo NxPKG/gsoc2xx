@@ -1,0 +1,30 @@
+---
+title: "Components"
+description: "Gsoc2's components span multiple clients, an API, and a storage backend"
+---
+
+## Gsoc2 API
+
+The Gsoc2 API (sometimes referred to as the **backend**) contains the core platform logic.
+
+## Storage backend
+
+Gsoc2 relies on a storage backend to store data including users and secrets.
+
+Currently, the only supported storage backend is [MongoDB](https://www.mongodb.com) but we plan to add support for other options including PostgreSQL in Q1 2024.
+
+## Redis
+
+Gsoc2 uses [Redis](https://redis.com) to enable more complex workflows including a queuing system to manage long running asynchronous tasks, cron jobs, as well as reliable cache for frequently used resources.
+
+## Gsoc2 Web UI
+
+The Web UI is the browser-based portal that connects to the Gsoc2 API.
+
+## Gsoc2 clients
+
+Clients are any application or infrastructure that connecting to the Gsoc2 API using one of the below methods:
+- Public API: Making API requests directly to the Gsoc2 API.
+- Client SDK: A platform-specific library with method abstractions for working with secrets. Currently, there are two official SDKs: [Node SDK](https://github.com/Gsoc2/gsoc2-node) and [Python SDK](https://github.com/Gsoc2/gsoc2-python).
+- CLI: A terminal-based interface for interacting with the Gsoc2 API.
+- Kubernetes Operator: This operator retrieves secrets from Gsoc2 and securely store

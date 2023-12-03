@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  backend:
+    container_name: gsoc2-backend-test
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    image: gsoc2/gsoc2:test
+    command: npm run start
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://test:example@mongo:27017/?authSource=admin
+      - MONGO_USERNAME=test
+      - MONGO_PASSWORD=example
+      - ENCRYPTION_KEY=a984ecdf82ec779e55dbcc21303a900f
+    networks:
+      - gsoc2-test
+
+  mongo:
+    container_name: gsoc2-mongo-test
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    networks:
+      - gsoc2-test
+
+networks:
+  gsoc2-test:

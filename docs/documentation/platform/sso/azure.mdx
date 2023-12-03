@@ -1,0 +1,106 @@
+---
+title: "Azure SAML"
+description: "Configure Azure SAML for Gsoc2 SSO"
+---
+
+<Info>
+   Azure SAML SSO feature is a paid feature.
+   
+   If you're using Gsoc2 Cloud, then it is available under the **Pro Tier**. If you're self-hosting Gsoc2,
+   then you should contact team@gsoc2.com to purchase an enterprise license to use it.
+</Info>
+
+1. In Gsoc2, head over to your organization Settings > Authentication > SAML SSO Configuration and select **Set up SAML SSO**.
+   Next, copy the **Reply URL (Assertion Consumer Service URL)** and **Identifier (Entity ID)** to use when configuring the Azure SAML application.
+
+![Azure SAML initial configuration](../../../images/sso/azure/init-config.png)
+
+2. In the Azure Portal, navigate to the Azure Active Directory and select **Enterprise applications**. On this screen, select
+   **+ New application**.
+
+![Azure SAML enterprise applications](../../../images/sso/azure/enterprise-applications.png)
+
+![Azure SAML new application](../../../images/sso/azure/new-application.png)
+
+2. On the next screen, press the **+ Create your own application** button.
+   Give the application a unique name like Gsoc2; choose the "Integrate any other application you don't find in the gallery (Non-gallery)"
+   option and hit the **Create** button.
+
+![Azure SAML create own application](../../../images/sso/azure/create-own-application.png)
+
+3. On the application overview screen, select **Single sign-on** from the left sidebar. From there,
+   select the **SAML** single sign-on method.
+
+![Azure SAML sign on method](../../../images/sso/azure/sso-method.png)
+
+4. Next, select **Edit** in the **Basic SAML Configuration** section and add/set the **Identifier (Entity ID)**
+   to **Entity ID** and add/set the **Reply URL (Assertion Consumer Service URL)** to **ACS URL** from step 1.
+
+![Azure SAML edit basic configuration](../../../images/sso/azure/edit-basic-config.png)
+
+![Azure SAML edit basic configuration 2](../../../images/sso/azure/edit-basic-config-2.png)
+
+<Note>
+  If you're self-hosting Gsoc2, then you will want to replace
+  `https://app.gsoc2.com` with your own domain.
+</Note>
+
+5. Back in the **Set up Single Sign-On with SAML** screen, select **Edit** in the **Attributes & Claims** section and configure the following map:
+
+- `email -> user.userprinciplename`
+- `firstName -> user.firstName`
+- `lastName -> user.lastName`
+
+![Azure SAML edit attributes and claims](../../../images/sso/azure/edit-attributes-claims.png)
+
+![Azure SAML edit attributes and claims 2](../../../images/sso/azure/edit-attributes-claims-2.png)
+
+6. Back in the **Set up Single Sign-On with SAML** screen, select **Edit** in the **SAML Certificates** section and set the **Signing Option** field to **Sign SAML response and assertion**.
+
+![Azure SAML edit certificate](../../../images/sso/azure/edit-saml-certificate.png)
+
+![Azure SAML edit certificate signing option](../../../images/sso/azure/edit-saml-certificate-2.png)
+
+7. Get IdP values:
+
+In the **Set up Single Sign-On with SAML** screen, copy the **Login URL** and **SAML Certificate** to use when finishing configuring Azure SAML in Gsoc2.
+
+![Azure SAML identity provider values 1](../../../images/sso/azure/idp-values.png)
+
+In the **Properties** screen, copy the **Application ID** to use when finishing configuring Azure SAML in Gsoc2.
+
+![Azure SAML identity provider values 2](../../../images/sso/azure/idp-values-2.png)
+
+Back in Gsoc2, set **Login URL**, **Azure Application ID**, and **SAML Certificate** from above. Once you've done that, press **Update** to complete the required configuration.
+
+![Azure SAML paste identity provider values](../../../images/sso/azure/idp-values-3.png)
+
+<Note>
+When pasting the certificate into Gsoc2, you'll want to retain `-----BEGIN
+  CERTIFICATE-----` and `-----END CERTIFICATE-----` at the first and last line
+  of the text area respectively.
+
+Having trouble?, try copying the X509 certificate information from the Federation Metadata XML file in Azure.
+
+</Note>
+
+7. Assignments
+
+Back in Azure, navigate to the **Users and groups** tab and select **+ Add user/group** to assign access to the login with SSO application on a user or group-level.
+![Azure SAML assignment](../../../images/sso/azure/assignment.png)
+
+8. Return to Gsoc2 and enable SAML SSO.
+
+Enabling SAML SSO enforces all members in your organization to only be able to log into Gsoc2 via Azure.
+
+![Azure SAML assignment](../../../images/sso/azure/enable-saml.png)
+
+<Note>
+   If you're configuring SAML SSO on a self-hosted instance of Gsoc2, make sure to
+   set the `JWT_PROVIDER_AUTH_SECRET` and `SITE_URL` environment variable for it to work:
+   
+   - `JWT_PROVIDER_AUTH_SECRET`: This is secret key used for signing and verifying JWT. This could be a randomly-generated 256-bit hex string.
+   - `SITE_URL`: The URL of your self-hosted instance of Gsoc2 - should be an absolute URL including the protocol (e.g. https://app.gsoc2.com)
+</Note>
+
+

@@ -1,0 +1,67 @@
+---
+title: "Docker Entrypoint"
+description: "How to use Gsoc2 to inject environment variables into a Docker container."
+---
+
+This approach allows you to inject secrets from Gsoc2 directly into your application.
+This is achieved by installing the Gsoc2 CLI into your docker image and modifying your start command to execute with Gsoc2.
+
+## Add the Gsoc2 CLI to your Dockerfile
+
+<Tabs>
+	 <Tab title="Alpine">
+		```dockerfile
+    	RUN apk add --no-cache bash curl && curl -1sLf \
+      'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.alpine.sh' | bash \
+      && apk add gsoc2
+    	```
+
+   </Tab>
+	 <Tab title="RedHat/CentOs/Amazon-linux">
+		```dockerfile
+    RUN curl -1sLf \
+    'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.rpm.sh' | sh \ 
+    && yum install -y gsoc2
+		```
+   </Tab>
+	 <Tab title="Debian/Ubuntu">
+		```dockerfile
+    RUN apt-get update && apt-get install -y bash curl && curl -1sLf \
+      'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.deb.sh' | bash \
+      && apt-get update && apt-get install -y gsoc2
+		```
+   </Tab>
+</Tabs>
+####
+<Tip>
+  We recommend you to set the version of the CLI to a specific version. This will help keep your CLI version consistent across reinstalls. [View versions](https://cloudsmith.io/~gsoc2/repos/gsoc2-cli/packages/)
+</Tip>
+
+## Modify the start command in your Dockerfile
+
+Starting your service with the Gsoc2 CLI pulls your secrets from Gsoc2 and injects them into your service.
+
+```dockerfile
+CMD ["gsoc2", "run", "--", "[your service start command]"]
+
+# example with single single command
+CMD ["gsoc2", "run", "--", "npm", "run", "start"]
+
+# example with multiple commands
+CMD ["gsoc2", "run", "--command", "npm run start && ..."]
+```
+
+## Generate an service token
+
+Head to your project settings in the Gsoc2 dashboard to generate an [service token](/documentation/platform/token). 
+This service token will allow you to authenticate and fetch secrets from Gsoc2. 
+Once you have created a service token with the required permissions, you’ll need to feed the token to the CLI installed in your docker container.
+
+## Feed service token to docker container
+The last step is to give the Gsoc2 CLI installed in your Docker container access to the service token. This will allow the CLI to fetch and inject the secrets into your application.
+
+To feed the service token to the container, use the GSOC2_TOKEN environment variable as shown below.
+
+```bash
+ docker run --env GSOC2_TOKEN=[token] [DOCKER-IMAGE]...
+```

@@ -1,0 +1,137 @@
+---
+title: "Quick usage"
+description: "Manage secrets with Gsoc2 CLI"
+---
+
+The CLI is designed for a variety of applications, ranging from local secret management to CI/CD and production scenarios. 
+The distinguishing factor, however, is the authentication method used.
+
+<Tabs>
+  <Tab title="Local development only">
+    To use the Gsoc2 CLI in your local development environment, simply run the command below and follow the interactive guide. 
+
+    ```bash 
+    gsoc2 login 
+    ```
+
+    <Note>
+      If you are in a containerized environment such as WSL 2 or Codespaces, run `gsoc2 login -i` to avoid browser based login 
+    </Note>
+
+    ## Initialize Gsoc2 for your project
+
+    ```bash
+    # navigate to your project
+    cd /path/to/project
+
+    # initialize gsoc2
+    gsoc2 init
+    ```
+
+    This will create `.gsoc2.json` file at the location the command was executed. This file contains your [local project settings](./project-config). It does not contain any sensitive data. 
+    
+  </Tab>
+
+  <Tab title="Staging, production & all other use case">
+    To use Gsoc2 for non local development scenarios, please create a [service token](../documentation/platform/token). The service token will allow you to authenticate and interact with Gsoc2. 
+    Once you have created a service token with the required permissions, you'll need to feed the token to the CLI. 
+
+    #### Pass as flag
+    You may use the --token flag to set the token 
+
+    ```
+    gsoc2 export --token=<>
+    gsoc2 secrets --token=<>
+    gsoc2 run --token=<> -- npm run dev
+    ```
+
+    #### Pass via shell environment variable
+    The CLI is configured to look for an environment variable named `GSOC2_TOKEN`. If set, it'll attempt to use it for authentication.
+
+    ```
+    export GSOC2_TOKEN=<>
+    ```
+    
+
+  </Tab>
+</Tabs>
+
+
+## Inject environment variables
+<Tabs>
+  <Tab title="Feed secrets to your application">
+    ```bash
+    gsoc2 run --env=dev --path=/apps/firefly -- [your application start command]
+
+    # example with node (nodemon)
+    gsoc2 run --env=staging --path=/apps/spotify -- nodemon index.js
+
+    # example with flask
+    gsoc2 run --env=prod --path=/apps/backend -- flask run
+
+    # example with spring boot - maven
+    gsoc2 run --env=dev --path=/apps/ -- ./mvnw spring-boot:run --quiet
+    ```
+  </Tab>
+  <Tab title="Feed secrets via custom aliases (advanced)">
+    Custom aliases can utilize secrets from Gsoc2. Suppose there is a custom alias `yd` in `custom.sh` that runs `yarn dev` and needs the secrets provided by Gsoc2.
+    ```bash
+    #!/bin/sh
+
+    yd() {
+      yarn dev
+    }
+    ```
+
+    To make the secrets available from Gsoc2 to `yd`, you can run the following command:
+
+    ```bash
+    gsoc2 run --env=prod --path=/apps/reddit --command="source custom.sh && yd"
+    ```
+  </Tab>
+</Tabs>
+
+View all available options for `run` command [here](./commands/run)
+
+## Connect CLI to self hosted Gsoc2 
+
+<Accordion title="Optional: point CLI to self-hosted">
+The CLI is set to connect to Gsoc2 Cloud by default, but if you're running your own instance of Gsoc2, you can direct the CLI to it using one of the methods provided below.
+
+#### Method 1: Use the updated CLI
+Beginning with CLI version V0.4.0, it is now possible to choose between logging in through the Gsoc2 cloud or your own self-hosted instance. Simply execute the `gsoc2 login` command and follow the on-screen instructions.
+
+#### Method 2: Export environment variable 
+You can point the CLI to the self hosted Gsoc2 instance by exporting the environment variable `GSOC2_API_URL` in your terminal.
+
+<Tabs>
+  <Tab title="Linux/MacOs">
+		```bash
+		# Set backend host 
+		export GSOC2_API_URL="https://your-self-hosted-gsoc2.com/api"
+
+		# Remove backend host 
+		unset GSOC2_API_URL
+		```
+  </Tab>
+  <Tab title="Windows Powershell">
+		```bash
+		# Set backend host 
+		setx GSOC2_API_URL "https://your-self-hosted-gsoc2.com/api"
+
+		# Remove backend host 
+		setx GSOC2_API_URL ""
+
+		# NOTE: Once set or removed, please restart powershell for the change to take effect
+		```
+  </Tab>
+</Tabs>
+
+#### Method 3: Set manually on every command
+Another option to point the CLI to your self hosted Gsoc2 instance is to set it via a flag on every command you run.
+
+```bash 
+# Example
+gsoc2 <any-command> --domain="https://your-self-hosted-gsoc2.com/api"
+```
+</Accordion>

@@ -1,0 +1,118 @@
+---
+title: 'Install'
+description: "Gsoc2's CLI is one of the best way to manage environments and secrets. Install it here"
+---
+
+The Gsoc2 CLI is powerful command line tool that can be used to retrieve, modify, export and inject secrets into any process or application as environment variables. 
+You can use it across various environments, whether it's local development, CI/CD, staging, or production.
+
+## Installation
+
+<Tabs>
+   <Tab title="MacOS">
+  	Use [brew](https://brew.sh/) package manager
+
+    	```bash
+    	brew install gsoc2/get-cli/gsoc2
+    	```
+
+    	### Updates
+
+    	```bash
+    	brew update && brew upgrade gsoc2
+    	```
+
+   </Tab>
+   <Tab title="Windows">
+      Use [Scoop](https://scoop.sh/) package manager
+
+    		```bash
+    		scoop bucket add org https://github.com/Gsoc2/scoop-gsoc2.git
+    		```
+
+    			```bash
+    			scoop install gsoc2
+    			```
+
+    		### Updates
+
+    		```bash
+    		scoop update gsoc2
+    		```
+
+   </Tab>
+	 <Tab title="Alpine">
+	 Install prerequisite
+		```bash
+		apk add --no-cache bash sudo
+		```
+
+    	Add Gsoc2 repository
+    	```bash
+    	curl -1sLf \
+    		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.alpine.sh' \
+    		| bash
+    	```
+
+    	Then install CLI
+    	```bash
+    	apk update && sudo apk add gsoc2
+    	```
+		###
+		<Tip>
+			If you are installing the CLI in production environments, we highly recommend to set the version of the CLI to a specific version. This will help keep your CLI version consistent across reinstalls. [View versions](https://cloudsmith.io/~gsoc2/repos/gsoc2-cli/packages/)
+		</Tip>
+   </Tab>
+	 <Tab title="RedHat/CentOs/Amazon">
+	 Add Gsoc2 repository
+		```bash
+		curl -1sLf \
+		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.rpm.sh' \
+		| sudo -E bash
+		```
+
+    	Then install CLI
+    	```bash
+    	sudo yum install gsoc2
+    	```
+		###
+		<Tip>
+			If you are installing the CLI in production environments, we highly recommend to set the version of the CLI to a specific version. This will help keep your CLI version consistent across reinstalls. [View versions](https://cloudsmith.io/~gsoc2/repos/gsoc2-cli/packages/)
+		</Tip>
+   </Tab>
+	 <Tab title="Debian/Ubuntu">
+	 	Add Gsoc2 repository 
+			
+		```bash
+		curl -1sLf \
+		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.deb.sh' \
+		| sudo -E bash
+		```
+
+    	Then install CLI
+    	```bash
+    	sudo apt-get update && sudo apt-get install -y gsoc2
+    	```
+	###
+	<Tip>
+		If you are installing the CLI in production environments, we highly recommend to set the version of the CLI to a specific version. This will help keep your CLI version consistent across reinstalls. [View versions](https://cloudsmith.io/~gsoc2/repos/gsoc2-cli/packages/)
+	</Tip>
+   </Tab>
+	<Tab title="Arch Linux">
+		Use the `yay` package manager to install from the [Arch User Repository](https://aur.archlinux.org/packages/gsoc2-bin)
+			
+		```bash
+		yay -S gsoc2-bin
+		```
+
+	###
+	<Tip>
+		If you are installing the CLI in production environments, we highly recommend to set the version of the CLI to a specific version. This will help keep your CLI version consistent across reinstalls. [View versions](https://cloudsmith.io/~gsoc2/repos/gsoc2-cli/packages/)
+	</Tip>
+   </Tab>
+</Tabs>
+
+## Quick Usage Guide
+<Card color="#00A300" href="./usage">
+  Now that you have the CLI installed on your system, follow this guide to make the best use of it
+</Card>

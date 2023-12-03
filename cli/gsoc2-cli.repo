@@ -1,0 +1,5 @@
+[gsoc2]
+name=Gsoc2 CLI
+baseurl=https://yum.fury.io/gsoc2/
+enabled=1
+gpgcheck=0

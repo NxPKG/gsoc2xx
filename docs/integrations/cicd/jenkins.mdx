@@ -1,0 +1,122 @@
+---
+title: "Jenkins"
+description: "How to effectively and securely manage secrets in Jenkins using Gsoc2"
+---
+
+Prerequisites:
+
+- Set up and add secrets to [Gsoc2](https://app.gsoc2.com).
+- You have a working Jenkins installation with the [credentials plugin](https://plugins.jenkins.io/credentials/) installed.
+- You have the Gsoc2 CLI installed on your Jenkins executor nodes or container images.
+
+## Add Gsoc2 Service Token to Jenkins
+
+After setting up your project in Gsoc2 and adding the Gsoc2 CLI to container images, you will need to add the Gsoc2 Service Token to Jenkins. Once you have generated the token, browse to **Manage Jenkins > Manage Credentials** in your Jenkins installation.
+
+![Jenkins step 1](../../images/integrations/jenkins/jenkins_1.png)
+
+Click on the credential store you want to store the Gsoc2 Service Token in. In this case, we're using the default Jenkins global store.
+
+<Info>
+  Each of your projects will have a different GSOC2_SERVICE_TOKEN though.
+  As a result, it may make sense to spread these out into separate credential domains depending on your use case.
+</Info>
+
+![Jenkins step 2](../../images/integrations/jenkins/jenkins_2.png)
+
+Now, click Add Credentials.
+
+![Jenkins step 3](../../images/integrations/jenkins/jenkins_3.png)
+
+Choose **Secret text** from the **Kind** dropdown menu, paste the Gsoc2 Service Token into the **Secret** field, enter `GSOC2_SERVICE_TOKEN` into the **Description** field, and click **OK**.
+
+![Jenkins step 4](../../images/integrations/jenkins/jenkins_4.png)
+
+When you're done, you should have a credential similar to the one below:
+
+![Jenkins step 5](../../images/integrations/jenkins/jenkins_5.png)
+
+
+## Use Gsoc2 in a Freestyle Project
+
+To use Gsoc2 in a Freestyle Project job, you'll need to expose the credential you created above in an environment variable. First, click New Item from the dashboard navigation sidebar:
+
+![Jenkins step 6](../../images/integrations/jenkins/jenkins_6.png)
+
+Enter the name of the job, choose the **Freestyle Project** option, and click **OK**.
+
+![Jenkins step 7](../../images/integrations/jenkins/jenkins_7.png)
+
+Scroll down to the **Build Environment** section and enable the **Use secret text(s) or file(s)** option. Then click **Add** under the **Bindings** section and choose **Secret text** from the dropdown menu.
+
+![Jenkins step 8](../../images/integrations/jenkins/jenkins_8.png)
+
+Enter GSOC2_SERVICE_TOKEN in the **Variable** field, select the **Specific credentials** option from the Credentials section and choose GSOC2_SERVICE_TOKEN from the dropdown menu.
+
+![Jenkins step 9](../../images/integrations/jenkins/jenkins_9.png)
+
+Scroll down to the **Build** section and choose **Execute shell** from the **Add build step** menu.
+
+![Jenkins step 10](../../images/integrations/jenkins/jenkins_10.png)
+
+In the command field, enter the following command and click **Save**:
+
+```
+gsoc2 run -- printenv
+```
+
+![Jenkins step 11](../../images/integrations/jenkins/jenkins_11.png)
+
+Finally, click **Build Now** from the navigation sidebar to test your new job.
+
+<Info>
+  Running into issues? Join Gsoc2's [community Slack](https://gsoc2.com/slack) for quick support.
+</Info>
+
+
+
+## Use Gsoc2 in a Jenkins Pipeline
+
+To use Gsoc2 in a Pipeline job, you'll need to expose the credential you created above as an environment variable. First, click **New Item** from the dashboard navigation sidebar:
+
+![Jenkins step 6](../../images/integrations/jenkins/jenkins_6.png)
+
+Enter the name of the job, choose the **Pipeline** option, and click OK.
+
+![Jenkins step 12](../../images/integrations/jenkins/jenkins_12.png)
+
+Scroll down to the **Pipeline** section, paste the following into the **Script** field, and click **Save**.
+
+```
+pipeline {
+    agent any
+
+    environment {
+        GSOC2_SERVICE_TOKEN = credentials('GSOC2_SERVICE_TOKEN')
+    }
+
+    stages {
+        stage('Run Gsoc2') {
+            steps {
+                sh("gsoc2 secrets")
+
+                // doesn't work
+                // sh("docker run --rm test-container gsoc2 secrets")
+
+                // works
+                // sh("docker run -e GSOC2_SERVICE_TOKEN=${GSOC2_SERVICE_TOKEN} --rm test-container gsoc2 secrets")
+
+                // doesn't work
+                // sh("docker-compose up -d")
+
+                // works
+                // sh("GSOC2_SERVICE_TOKEN=${GSOC2_SERVICE_TOKEN} docker-compose up -d")
+            }
+        }
+    }
+}
+```
+
+This is a very basic sample that you can work from. Jenkins injects the GSOC2_SERVICE_TOKEN environment variable defined in the pipeline into the shell the commands execute with, but there are some situations where that won't pass through properly – notably if you're executing docker containers on the executor machine. The examples above should give you some idea for how that will work.
+
+Finally, click **Build Now** from the navigation sidebar to test your new job.

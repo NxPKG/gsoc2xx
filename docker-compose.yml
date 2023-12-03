@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  backend:
+    container_name: gsoc2-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    image: gsoc2/gsoc2:latest
+    env_file: .env
+    ports:
+      - 80:8080
+    environment:
+      - NODE_ENV=production
+    networks:
+      - gsoc2
+
+  redis:
+    image: redis
+    container_name: gsoc2-dev-redis
+    env_file: .env
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+    networks:
+      - gsoc2
+    volumes:
+      - redis_data:/data
+
+  mongo:
+    container_name: gsoc2-mongo
+    image: mongo
+    restart: always
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - gsoc2
+
+volumes:
+  mongo-data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  gsoc2:

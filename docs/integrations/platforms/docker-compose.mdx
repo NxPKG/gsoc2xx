@@ -1,0 +1,56 @@
+---
+title: "Docker Compose"
+description: "How to use Gsoc2 to inject environment variables into services defined in your Docker Compose file."
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+
+## Configure the Gsoc2 CLI for each service
+
+Follow this [guide](./docker) to configure the Gsoc2 CLI for each service that you wish to inject environment variables into; you'll have to update the Dockerfile of each service.
+
+## Generate service token 
+
+Generate a unique [Gsoc2 Token](/documentation/platform/token) for each service.
+
+## Feed service token to your Docker Compose file
+
+For each service you want to inject secrets into, set an environment variable called `GSOC2_TOKEN` equal to a unique identifier variable.
+
+In the example below, we set `GSOC2_TOKEN_FOR_WEB` and `GSOC2_TOKEN_FOR_API` as the `GSOC2_TOKEN` for the services.
+
+```yaml
+# Example Docker Compose file
+services:
+  web:
+    build: .
+    image: example-service-1
+    environment:
+      - GSOC2_TOKEN=${GSOC2_TOKEN_FOR_WEB}
+
+  api:
+    build: .
+    image: example-service-2
+    environment:
+      - GSOC2_TOKEN=${GSOC2_TOKEN_FOR_API}
+```
+
+## Export shell variables
+
+Next, set the shell variables you defined in your compose file. This can be done manually or via your CI/CD environment. Once done, it will be used to populate the corresponding `GSOC2_TOKEN`
+in your Docker Compose file.
+
+```bash
+#Example
+
+# Token refers to the token we generated in step 2 for this service
+export GSOC2_TOKEN_FOR_WEB=<token>
+
+# Token refers to the token we generated in step 2 for this service
+export GSOC2_TOKEN_FOR_API=<token>
+
+# Then run your compose file in the same terminal.
+docker-compose ...
+```

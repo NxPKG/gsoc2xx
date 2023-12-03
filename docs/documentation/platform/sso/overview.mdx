@@ -1,0 +1,25 @@
+---
+title: "SSO Overview"
+description: "Log in to Gsoc2 via SSO protocols"
+---
+
+<Warning>
+  Gsoc2 offers Google SSO and GitHub SSO for free across both Gsoc2 Cloud and Gsoc2 Self-hosted.
+  
+  Gsoc2 also offers SAML SSO authentication but as paid features that can be unlocked on Gsoc2 Cloud's **Pro** tier
+  or via enterprise license on self-hosted instances of Gsoc2. On this front, we currently support Okta, Azure AD, and JumpCloud and
+  are expanding support for other IdPs in the coming months; stay tuned and feel free to request a IdP at this
+  [issue](https://github.com/Gsoc2/gsoc2/issues/442).
+</Warning>
+
+You can configure your organization in Gsoc2 to have members authenticate with the platform via protocols like [SAML 2.0](https://en.wikipedia.org/wiki/SAML_2.0).
+
+To note, configuring SSO retains the end-to-end encrypted architecture of Gsoc2 because we decouple the **authentication** and **decryption** steps. In all login with SSO implementations,
+your IdP cannot and will not have access to the decryption key needed to decrypt your secrets.
+
+- [Google SSO](/documentation/platform/sso/google)
+- [GitHub SSO](/documentation/platform/sso/github)
+- [GitLab SSO](/documentation/platform/sso/gitlab)
+- [Okta SAML](/documentation/platform/sso/okta)
+- [Azure SAML](/documentation/platform/sso/azure)
+- [JumpCloud SAML](/documentation/platform/sso/jumpcloud)

@@ -1,0 +1,128 @@
+---
+title: "CLI"
+---
+
+The Gsoc2 CLI can be used to inject secrets into any framework like Next.js, Express, Django and more in local development.
+
+It can also be used to expose secrets from Gsoc2 as environment variables in CI/CD pipelines and [Docker containers](/documentation/getting-started/docker)
+
+Prerequisites: 
+
+- Have a project with secrets ready in [Gsoc2 Cloud](https://app.gsoc2.com).
+
+## Installation
+
+Follow the instructions for your operating system to install the Gsoc2 CLI.
+
+<Tabs>
+   <Tab title="MacOS">
+  	Use [brew](https://brew.sh/) package manager
+
+    	```console
+    	$ brew install gsoc2/get-cli/gsoc2
+    	```
+   </Tab>
+   <Tab title="Windows">
+      Use [Scoop](https://scoop.sh/) package manager
+
+        ```console
+        $ scoop bucket add org https://github.com/Gsoc2/scoop-gsoc2.git
+        ```
+
+        ```console
+        $ scoop install gsoc2
+        ```
+   </Tab>
+	 <Tab title="Alpine">
+	 Install prerequisite
+		```console
+		$ apk add --no-cache bash sudo
+		```
+
+    	Add Gsoc2 repository
+    	```console
+    	$ curl -1sLf \
+    		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.alpine.sh' \
+    		| bash
+    	```
+
+    	Then install CLI
+    	```console
+    	$ apk update && sudo apk add gsoc2
+    	```
+
+   </Tab>
+	 <Tab title="RedHat/CentOs/Amazon">
+	 Add Gsoc2 repository
+		```console
+		$ curl -1sLf \
+		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.rpm.sh' \
+		| sudo -E bash
+		```
+
+    	Then install CLI
+    	```console
+    	$ sudo yum install gsoc2
+    	```
+
+   </Tab>
+	 <Tab title="Debian/Ubuntu">
+	 	Add Gsoc2 repository 
+			
+		```console
+		$ curl -1sLf \
+		'https://dl.cloudsmith.io/public/gsoc2/gsoc2-cli/setup.deb.sh' \
+		| sudo -E bash
+		```
+
+    	Then install CLI
+    	```console
+    	$ sudo apt-get update && sudo apt-get install -y gsoc2
+    	```
+
+   </Tab>
+	<Tab title="Arch Linux">
+		Use the `yay` package manager to install from the [Arch User Repository](https://aur.archlinux.org/packages/gsoc2-bin)
+			
+		```console
+		$ yay -S gsoc2-bin
+		```
+
+   </Tab>
+</Tabs>
+
+## Login
+
+Authenticate the CLI with the Gsoc2 platform using your email and password.
+
+```console
+$ gsoc2 login
+```
+
+## Initialization
+
+Navigate to the root of your project directory and run the `init` command. This step connects your local project to the project on the Gsoc2 platform and creates a `gsoc2.json` file containing a reference to that latter project.
+
+```console
+$ gsoc2 init
+```
+
+## Start your app with environment variables injected
+
+```console
+$ gsoc2 run -- <your_application_start_command>
+```
+
+## Example Start Commands
+
+```console
+$ gsoc2 run -- npm run dev
+$ gsoc2 run -- flask run
+$ gsoc2 run -- ./your_bash_script.sh
+```
+
+Your app should now be running with the secrets from Gsoc2 injected as environment variables.
+
+See also:
+
+- [Full documentation for the Gsoc2 CLI](/cli/overview)

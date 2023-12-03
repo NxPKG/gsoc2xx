@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gsoc2-operator-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gsoc2-config
+  namespace: gsoc2-operator-system
+data:
+  hostAPI: "https://example.com/api"

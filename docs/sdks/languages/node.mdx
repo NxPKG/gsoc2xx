@@ -1,0 +1,207 @@
+---
+title: "Node"
+icon: "node"
+---
+
+If you're working with Node.js, the official [gsoc2-node](https://github.com/Gsoc2/gsoc2-node) package is the easiest way to fetch and work with secrets for your application.
+
+## Basic Usage
+
+```js
+import express from "express";
+import Gsoc2Client from "gsoc2-node";
+const app = express();
+const PORT = 3000;
+
+const client = new Gsoc2Client({
+  token: "YOUR_GSOC2_TOKEN"
+});
+
+app.get("/", async (req, res) => {
+  // access value
+  const name = await client.getSecret("NAME");
+  res.send(`Hello! My name is: ${name.secretValue}`);
+});
+
+app.listen(PORT, async () => {
+  console.log(`App listening on port ${PORT}`);
+});
+```
+
+This example demonstrates how to use the Gsoc2 Node SDK with an Express application. The application retrieves a secret named "NAME" and responds to requests with a greeting that includes the secret value.
+
+<Warning>
+  We do not recommend hardcoding your [Gsoc2
+  Token](/documentation/platform/token). Setting it as an environment
+  variable would be best.
+</Warning>
+
+## Installation
+
+Run `npm` to add `gsoc2-node` to your project.
+
+```console
+$ npm install gsoc2-node --save
+```
+
+## Configuration
+
+Import the SDK and create a client instance with your [Gsoc2 Token](/documentation/platform/token).
+
+<Tabs>
+  <Tab title="ES6">
+    ```js
+    import Gsoc2Client from "gsoc2-node";
+    
+    const client = new Gsoc2Client({
+      token: "your_gsoc2_token"
+    });
+    ```
+
+  </Tab>
+  <Tab title="ES5">
+    ```js
+    const Gsoc2Client = require("gsoc2-node");
+    
+    const client = new Gsoc2Client({
+      token: "your_gsoc2_token"
+    });
+    ````
+  </Tab>
+
+</Tabs>
+
+### Parameters
+
+<ParamField query="options" type="object">
+  <Expandable title="properties">
+    <ParamField query="token" type="string" optional>
+      An [Gsoc2 Token](/documentation/platform/token) scoped to a project
+      and environment
+    </ParamField>
+    <ParamField
+      query="siteURL"
+      type="string"
+      default="https://app.gsoc2.com"
+      optional
+    >
+      Your self-hosted absolute site URL including the protocol (e.g.
+      `https://app.gsoc2.com`)
+    </ParamField>
+    <ParamField query="cacheTTL" type="number" default="300" optional>
+      Time-to-live (in seconds) for refreshing cached secrets. Default: `300`.
+    </ParamField>
+    <ParamField query="debug" type="boolean" default="false" optional>
+      Whether or not debug mode is on
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Caching
+
+The SDK caches every secret and updates it periodically based on the provided `cacheTTL`. For example, if `cacheTTL` of `300` is provided, then a secret will be refetched 5 minutes after the first fetch; if the fetch fails, the cached secret is returned.
+
+<Tip>
+  For optimal performance, we recommend creating a single instance of the Gsoc2 client and exporting it to be used across your entire app to take advantage of caching benefits.
+</Tip>
+
+## Working with Secrets
+
+### client.getAllSecrets()
+
+```js
+const secrets = await client.getAllSecrets();
+```
+
+Retrieve all secrets within the Gsoc2 project and environment that client is connected to
+
+### client.getSecret(secretName, options)
+
+```js
+const secret = await client.getSecret("API_KEY");
+const value = secret.secretValue; // get its value
+```
+
+Retrieve a secret from Gsoc2.
+
+By default, `getSecret()` fetches and returns a personal secret. If not found, it returns a shared secret, or tries to retrieve the value from `process.env`. If a secret is fetched, `getSecret()` caches it to reduce excessive calls and re-fetches periodically based on the `cacheTTL` option (default is `300` seconds) when initializing the client — for more information, see the caching section.
+
+### Parameters
+
+<ParamField query="secretName" type="string" required>
+  The key of the secret to retrieve
+</ParamField>
+<ParamField query="options" type="object" optional>
+  <Expandable title="properties">
+    <ParamField query="type" type="string" default="personal" optional>
+      The type of the secret. Valid options are "shared" or "personal"
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### client.createSecret(secretName, secretValue, options)
+
+```js
+const newApiKey = await client.createSecret("API_KEY", "FOO");
+```
+
+Create a new secret in Gsoc2.
+
+<ParamField query="secretName" type="string" required>
+  The key of the secret to create
+</ParamField>
+<ParamField query="secretName" type="string" required>
+  The value of the secret to create
+</ParamField>
+<ParamField query="options" type="object" default="object" optional>
+  <Expandable title="properties">
+    <ParamField query="type" type="string" default="shared" optional>
+      The type of the secret. Valid options are "shared" or "personal". A personal secret can only be created if a shared secret with the same name exists.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### client.updateSecret(secretName, secretValue, options)
+
+```js
+const updatedApiKey = await client.updateSecret("API_KEY", "BAR");
+```
+
+Update an existing secret in Gsoc2.
+
+### Parameters
+
+<ParamField query="secretName" type="string" required>
+  The key of the secret to update
+</ParamField>
+<ParamField query="secretName" type="string" required>
+  The new value of the secret
+</ParamField>
+<ParamField query="options" type="object" default="object" optional>
+  <Expandable title="properties">
+    <ParamField query="type" type="string" default="shared" optional>
+      The type of the secret. Valid options are "shared" or "personal"
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### client.deleteSecret(secretName, options)
+
+```js
+const deletedSecret = await client.deleteSecret("API_KEY");
+```
+
+Delete a secret in Gsoc2.
+
+<ParamField query="secretName" type="string" required>
+  The key of the secret to delete
+</ParamField>
+<ParamField query="options" type="object" default="object" optional>
+  <Expandable title="properties">
+    <ParamField query="type" type="string" default="shared" optional>
+      The type of the secret. Valid options are "shared" or "personal". Note that deleting a shared secret also deletes all associated personal secrets.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+

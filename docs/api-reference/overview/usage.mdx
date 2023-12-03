@@ -1,0 +1,18 @@
+---
+title: "Usage"
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com) or your self-hosted instance.
+- Obtain an API Key in your user settings to be included in requests to the Gsoc2 API.
+
+Using Gsoc2's API to manage secrets requires a basic understanding of the system and its underlying cryptography detailed [here](/security/overview).
+
+## Concepts
+
+- Each user has a public/private key pair that is stored with the platform; private keys are encrypted locally by the user's password before being sent off to the server during the account signup process.
+- Each (encrypted) secret belongs to a project and environment.
+- Each project has an (encrypted) project key used to encrypt the secrets within that project; Gsoc2 stores copies of the project key, for each member of that project, encrypted under each member's public key.
+- Secrets are encrypted symmetrically by your copy of the project key belonging to the project containing.
+- Gsoc2 uses AES256-GCM and [TweetNaCl.js](https://tweetnacl.js.org/#/) for symmetric and asymmetric encryption/decryption operations.

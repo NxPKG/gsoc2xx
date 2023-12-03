@@ -1,0 +1,16 @@
+domain: gsoc2.com
+layout:
+- go.kubebuilder.io/v3
+projectName: k8-operator
+repo: github.com/Gsoc2/gsoc2/k8-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: gsoc2.com
+  group: secrets
+  kind: Gsoc2Secret
+  path: github.com/Gsoc2/gsoc2/k8-operator/api/v1alpha1
+  version: v1alpha1
+version: "3"

@@ -1,0 +1,138 @@
+---
+title: "Kubernetes"
+description: "How to deploy Gsoc2 with Kubernetes"
+---
+
+<Info>
+Self-host vs. Gsoc2 Cloud
+
+Self-hosting Gsoc2 means managing the service yourself, taking care of upgrades, scaling, security, etc.
+
+If you're less technical and looking for a hands-free experience with minimal overhead then we recommend Gsoc2 Cloud.
+
+</Info>
+
+**Prerequisites**
+- You have understanding of [Kubernetes](https://kubernetes.io/)
+- You have understanding of [Helm package manager](https://helm.sh/) 
+- You have [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) installed and connected to your kubernetes cluster
+
+
+#### 1. Fill our environment variables
+
+Before you can deploy the Helm chart, you must fill out the required environment variables. To do so, please copy the below file to a `.yaml` file. 
+Refer to the available [environment variables](../../self-hosting/configuration/envars) to learn more
+
+<Accordion title="values.yaml">
+[View all available Helm chart values parameters](https://github.com/Gsoc2/gsoc2/tree/main/helm-charts/gsoc2)
+```yaml
+frontend:
+  enabled: true
+  name: frontend
+  podAnnotations: {}
+  deploymentAnnotations: {}
+  replicaCount: 2
+  image:
+    repository: gsoc2/frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  kubeSecretRef: ""
+  service:
+    annotations: {}
+    type: ClusterIP
+    nodePort: ""
+
+frontendEnvironmentVariables:
+  SITE_URL: gsoc2.local
+
+backend:
+  enabled: true
+  name: backend
+  podAnnotations: {}
+  deploymentAnnotations: {}
+  replicaCount: 2
+  image:
+    repository: gsoc2/backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  kubeSecretRef: ""
+  service:
+    annotations: {}
+    type: ClusterIP
+    nodePort: ""
+
+backendEnvironmentVariables:
+  ENCRYPTION_KEY: MUST_REPLACE
+  JWT_SIGNUP_SECRET: MUST_REPLACE
+  JWT_REFRESH_SECRET: MUST_REPLACE
+  JWT_AUTH_SECRET: MUST_REPLACE
+  JWT_SERVICE_SECRET: MUST_REPLACE
+  SMTP_HOST: MUST_REPLACE
+  SMTP_PORT: 587
+  SMTP_SECURE: false
+  SMTP_FROM_NAME: Gsoc2
+  SMTP_FROM_ADDRESS: MUST_REPLACE
+  SMTP_USERNAME: MUST_REPLACE
+  SMTP_PASSWORD: MUST_REPLACE
+  SITE_URL: gsoc2.local
+
+## Mongo DB persistence
+mongodb:
+  enabled: true
+
+## By default the backend will be connected to a Mongo instance within the cluster
+## However, it is recommended to add a managed document DB connection string for production-use (DBaaS)
+## Learn about connection string type here https://www.mongodb.com/docs/manual/reference/connection-string/
+## e.g. "mongodb://<user>:<pass>@<host>:<port>/<database-name>"
+mongodbConnection:
+  externalMongoDBConnectionString: ""
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    # cert-manager.io/issuer: letsencrypt-nginx
+  hostName: gsoc2.local   ## <- Replace with your own domain 
+  frontend:
+    path: /
+    pathType: Prefix
+  backend:
+    path: /api
+    pathType: Prefix
+  tls: []
+    # - secretName: letsencrypt-nginx
+    #   hosts:
+    #     - gsoc2.local
+
+mailhog:
+  enabled: false
+```
+</Accordion>
+
+Once you have a local copy of the values file, fill our the required environment variables and save the file.
+
+
+#### 2. Install Gsoc2 Helm repository 
+
+```bash
+helm repo add gsoc2-helm-charts 'https://dl.cloudsmith.io/public/gsoc2/helm-charts/helm/charts/' 
+  
+helm repo update
+```
+
+#### 3. Install the Helm chart 
+
+By default, the helm chart will be installed on your default namespace. If you wish to install the Chart on a different namespace, you may specify
+that by adding the `--namespace <namespace-to-install-to>` to your `helm install` command.
+
+```bash
+## Installs to default namespace
+helm install gsoc2-helm-charts/gsoc2 --generate-name --values <path to the values.yaml you downloaded/created in step 2>
+```
+
+<Note>
+If you have not filled out all of the required environment variables, you will see an error message prompting you to 
+do so. 
+</Note>
+
+#### 4. Your Gsoc2 installation is complete and should be running on the host name you specified in Ingress in `values.yaml`.

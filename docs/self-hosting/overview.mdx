@@ -1,0 +1,42 @@
+---
+title: "Introduction"
+description: "Explore deployment options for self hosting Gsoc2"
+---
+
+To meet various compliance requirements, you may want to self-host Gsoc2 instead of using [Gsoc2 Cloud](https://app.gsoc2.com/).
+Self-hosted Gsoc2 allows you to maintain your sensitive information within your own infrastructure and network, ensuring complete control over your data.
+Choose from a variety of deployment options listed below to get started.
+
+<Card
+  title="Docker"
+  color="#0285c7"
+  href="deployment-options/standalone-gsoc2"
+>
+  Use the fully packaged docker image to deploy Gsoc2 anywhere
+</Card>
+<CardGroup cols={2}>
+  <Card
+    title="Digital Ocean"
+    color="#16a34a"
+    href="deployment-options/digital-ocean-marketplace"
+  >
+    Automatically create and deploy Gsoc2 on to a Kubernetes cluster
+  </Card>
+  <Card title="AWS EC2" color="#0285c7" href="deployment-options/aws-ec2">
+    Install gsoc2 with just a few clicks using our Cloud Formation template
+  </Card>
+  <Card
+    title="Docker Compose"
+    color="#0285c7"
+    href="deployment-options/docker-compose"
+  >
+    Install Gsoc2 using our Docker Compose template
+  </Card>
+  <Card
+  title="Kubernetes"
+  color="#ea5a0c"
+  href="deployment-options/kubernetes-helm"
+>
+  Use our Helm chart to Install Gsoc2 on your Kubernetes cluster
+</Card>
+</CardGroup>

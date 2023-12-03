@@ -1,0 +1,36 @@
+---
+title: "CircleCI"
+description: "How to sync secrets from Gsoc2 to CircleCI"
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+
+## Navigate to your project's integrations tab
+
+![integrations](../../images/integrations.png)
+
+## Authorize Gsoc2 for CircleCI
+
+Obtain an API token in User Settings > Personal API Tokens
+
+![integrations circleci token](../../images/integrations/circleci/integrations-circleci-token.png)
+
+Press on the CircleCI tile and input your CircleCI API token to grant Gsoc2 access to your CircleCI account.
+
+![integrations circleci authorization](../../images/integrations/circleci/integrations-circleci-auth.png)
+
+<Info>
+  If this is your project's first cloud integration, then you'll have to grant
+  Gsoc2 access to your project's environment variables. Although this step
+  breaks E2EE, it's necessary for Gsoc2 to sync the environment variables to
+  the cloud platform.
+</Info>
+
+## Start integration
+
+Select which Gsoc2 environment secrets you want to sync to which CircleCI project and press create integration to start syncing secrets to CircleCI.
+
+![create integration circleci](../../images/integrations/circleci/integrations-circleci-create.png)
+![integrations circleci](../../images/integrations/circleci/integrations-circleci.png)

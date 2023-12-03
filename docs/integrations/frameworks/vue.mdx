@@ -1,0 +1,34 @@
+---
+title: "Vue"
+description: "How to use Gsoc2 to inject environment variables and secrets into a Vue.js app."
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+- [Install the CLI](/cli/overview)
+
+## Initialize Gsoc2 for your [Vue](https://vuejs.org) app
+
+```bash
+# navigate to the root of your of your project 
+cd /path/to/project
+
+# then initialize gsoc2
+gsoc2 init
+```
+
+## Start your application as usual but with Gsoc2
+
+```bash
+gsoc2 run -- <your application start command>
+
+# Example
+gsoc2 run -- npm run dev
+```
+
+<Note>
+  Note that for environment variables to be exposed to the client, you'll have
+  to prefix them with `VUE_APP` Read more about that
+  [here](https://cli.vuejs.org/guide/mode-and-env.html).
+</Note>

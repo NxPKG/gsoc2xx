@@ -1,0 +1,52 @@
+---
+title: "PM2"
+description: "How to use Gsoc2 to inject environment variables and secrets with PM2 into a Node.js app"
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+- [Install the CLI](/cli/overview)
+
+## Initialize Gsoc2 for your Node.js app
+
+```bash
+# navigate to the root of your of your project
+cd /path/to/project
+
+# then initialize gsoc2
+gsoc2 init
+```
+
+## Create a bash or js script
+
+<CodeGroup>
+
+```bash gsoc2-run.sh
+gsoc2 run -- npm start
+```
+
+```js gsoc2-run.js
+const spawn = require("child_process").spawn;
+
+const gsoc2 = spawn("gsoc2", ["run", "--", "npm", "start"]);
+
+gsoc2.stdout.on("data", (data) => console.log(`${data}`));
+gsoc2.stderr.on("data", (data) => console.error(`${data}`));
+```
+
+</CodeGroup>
+
+## Start your application as usual but with the script
+
+<CodeGroup>
+
+```bash gsoc2-run.sh
+pm2 start gsoc2-run.sh
+```
+
+```bash gsoc2-run.js
+pm2 start gsoc2-run.js
+```
+
+</CodeGroup>

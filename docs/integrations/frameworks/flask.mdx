@@ -1,0 +1,28 @@
+---
+title: "Flask"
+description: "How to use Gsoc2 to inject environment variables and secrets into a Flask app."
+---
+
+Prerequisites:
+
+- Set up and add envars to [Gsoc2 Cloud](https://app.gsoc2.com)
+- [Install the CLI](/cli/overview)
+
+## Initialize Gsoc2 for your [Flask](https://flask.palletsprojects.com/en/2.2.x) app
+
+```bash
+# navigate to the root of your of your project 
+cd /path/to/project
+
+# then initialize Gsoc2
+gsoc2 init
+```
+
+## Start your application as usual but with Gsoc2
+
+```bash
+gsoc2 run -- <your application start command>
+
+# Example 
+gsoc2 run -- flask run
+```
